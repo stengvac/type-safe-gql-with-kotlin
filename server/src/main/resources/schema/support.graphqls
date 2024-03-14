@@ -1,0 +1,32 @@
+type Query {
+    "Pricing used to compute total price"
+    pricing: PizzaPricing!
+}
+
+extend type Mutation {
+    "Restock ingredients - reset pizzeria state. Return value is dummy value."
+    restock: Boolean
+}
+
+type PizzaPricing {
+    ingredients: [PizzaIngredientPortionPrice!]!
+    sizes: [PizzaSizePrice!]!
+    bases: [PizzaBasePrice!]!
+}
+
+"How much one portion of pizza ingredient cost."
+type PizzaIngredientPortionPrice {
+    ingredient: PizzaIngredient!
+    pricePerPortion: PositiveInt!
+}
+
+"Pizza price only with pizza base applied."
+type PizzaSizePrice {
+    size: PizzaSize!
+    price: PositiveInt!
+}
+
+type PizzaBasePrice {
+    base: PizzaBase!
+    price: PositiveInt!
+}

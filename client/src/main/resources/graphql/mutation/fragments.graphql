@@ -1,0 +1,22 @@
+# Reusable units called fragments. Fragments let you construct sets of fields, and then include them in queries where you need to.
+
+fragment NoIngredientsOnPizzaError on NoIngredientsOnPizzaError {
+    availableIngredients
+}
+
+fragment IngredientsOutOfStockError on IngredientsOutOfStockError {
+    ingredients {
+        ingredient
+        availablePortions
+        orderedPortions
+    }
+}
+
+fragment TooManyIngredientPortionsOnPizzaError on TooManyIngredientPortionsOnPizzaError {
+    maxPortions
+}
+
+fragment OrderedPizza on OrderedPizza {
+    price
+    orderId
+}

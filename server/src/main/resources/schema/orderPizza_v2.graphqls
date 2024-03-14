@@ -1,0 +1,39 @@
+extend type Mutation {
+
+    """
+    Order pizza API version 2. Same behavior as API version 1.
+
+    Success state returned as type declared in schema.
+    Error states are also part of response not any longer in `errors`.
+    """
+    orderPizza_v2(order: PizzaOrderInput!): OrderPizzaResponseV2!
+}
+
+type OrderPizzaResponseV2 {
+    "Non null value imply, that order will be processed."
+    order: OrderedPizza
+    "Non null value imply, that some ingredients are out of stock."
+    outOfStock: IngredientsOutOfStockError
+    "Not null value imply, that order won't be fulfilled retry with lower ingredient portion."
+    pizzaOvercrowded: TooManyIngredientPortionsOnPizzaError
+    "Not null value imply, that customer has to add at least one portion of any ingredient on pizza."
+    noIngredientsOnPizza: NoIngredientsOnPizzaError
+}
+
+type TooManyIngredientPortionsOnPizzaError {
+    maxPortions: Int!
+}
+
+type IngredientOutOfStock {
+    ingredient: PizzaIngredient!
+    orderedPortions: Int!
+    availablePortions: Int!
+}
+
+type NoIngredientsOnPizzaError {
+    availableIngredients: [PizzaIngredient!]!
+}
+
+type IngredientsOutOfStockError {
+    ingredients: [IngredientOutOfStock!]!
+}

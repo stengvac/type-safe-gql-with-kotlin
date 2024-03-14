@@ -1,0 +1,5 @@
+mutation OrderPizzaV1($order: PizzaOrderInput!) {
+    orderPizza_v1(order: $order) {
+        ...OrderedPizza
+    }
+}

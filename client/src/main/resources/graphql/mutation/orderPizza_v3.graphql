@@ -1,0 +1,23 @@
+mutation OrderPizzaV3($order: PizzaOrderInput!) {
+    orderPizza_v3(order: $order) {
+        __typename
+        ... on OrderedPizza {
+            ...OrderedPizza
+        }
+        ... on OrderPizzaValidationErrorResponse {
+            __typename
+            error {
+                __typename
+                ... on TooManyIngredientPortionsOnPizzaError {
+                    ...TooManyIngredientPortionsOnPizzaError
+                }
+                ... on NoIngredientsOnPizzaError {
+                    ...NoIngredientsOnPizzaError
+                }
+                ... on IngredientsOutOfStockError {
+                    ...IngredientsOutOfStockError
+                }
+            }
+        }
+    }
+}

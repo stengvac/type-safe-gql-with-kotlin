@@ -1,0 +1,60 @@
+scalar PositiveInt
+
+type Mutation {
+    """
+    Order pizza API version 1.
+
+    Possible validation errors:
+
+    No ingredients added on pizza. Pick at least 1.
+    errorCode: NO_INGREDIENTS_ADDED
+    context: Provider also return list of available ingredients (portions in stock remain > 0).
+
+    Too many ingredient portions on pizza (depend on pizza size).
+    errorCode: TOO_MANY_INGREDIENT_PORTIONS
+    Provider return `maxPortions` possible to add on Pizza.
+
+    * Out of ingredient(s) - pizzeria run out of one or more requested ingredients.
+    errorCode: INGREDIENTS_OUT_OF_STOCK
+    context: return list of `ingredients` with `orderPortions`, `availablePortions`, `ingredient` type.
+    """
+    orderPizza_v1(order: PizzaOrderInput!): OrderedPizza!
+}
+
+"Pizza size matters! Bigger pizza can fit more portions."
+enum PizzaSize {
+    "32 cm - max 10 ingredient portions."
+    STANDARD,
+    "45 cm - max 15 ingredient portions."
+    XL
+}
+
+enum PizzaBase {
+    TOMATO,
+    CREAMY,
+    CHOCOLATE,
+}
+
+enum PizzaIngredient {
+    SALAMI,
+    HAM,
+    PINEAPPLE,
+    MOZZARELLA,
+    OLIVES,
+}
+
+input PizzaOrderInput {
+    size: PizzaSize!
+    base: PizzaBase!
+    ingredients: [PizzaIngredientPortionInput!]!
+}
+
+input PizzaIngredientPortionInput {
+    ingredient: PizzaIngredient!
+    portions: PositiveInt!
+}
+
+type OrderedPizza {
+    orderId: Int!
+    price: Int!
+}

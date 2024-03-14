@@ -1,0 +1,16 @@
+query Pricing {
+    pricing {
+        ingredients {
+            ingredient
+            pricePerPortion
+        }
+        sizes {
+            price
+            size
+        }
+        bases {
+            price
+            base
+        }
+    }
+}

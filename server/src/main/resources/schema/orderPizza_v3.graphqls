@@ -1,0 +1,18 @@
+extend type Mutation {
+    """
+    Order pizza API version 3. Same behavior as version 1 or 2.
+    """
+    orderPizza_v3(order: PizzaOrderInput!): OrderPizzaResponseV3!
+}
+
+"Exactly one of listed types."
+union OrderPizzaResponseV3 = OrderedPizza | OrderPizzaValidationErrorResponse
+# also is possible to use more flat approach, but it mix success and error branches together
+# union OrderPizzaResponseV3 = OrderedPizza | NoIngredientsOnPizza | TooManyIngredientPortionsOnPizza | IngredientsOutOfStockError
+
+type OrderPizzaValidationErrorResponse {
+    error: OrderPizzaValidationError!
+}
+
+"Possible validation errors"
+union OrderPizzaValidationError = NoIngredientsOnPizzaError | TooManyIngredientPortionsOnPizzaError | IngredientsOutOfStockError

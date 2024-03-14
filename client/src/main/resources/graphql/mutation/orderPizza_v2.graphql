@@ -1,0 +1,16 @@
+mutation OrderPizzaV2($order: PizzaOrderInput!) {
+    orderPizza_v2(order: $order) {
+        order {
+            ...OrderedPizza
+        }
+        outOfStock {
+            ...IngredientsOutOfStockError
+        }
+        noIngredientsOnPizza {
+            ...NoIngredientsOnPizzaError
+        }
+        pizzaOvercrowded {
+            ...TooManyIngredientPortionsOnPizzaError
+        }
+    }
+}
