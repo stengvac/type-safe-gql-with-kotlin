@@ -73,7 +73,7 @@ Today we will focus on case, where consumer has to react on validation errors:
 
 and has to react accordingly. Is proposed API friendly in such situation? 
 
-# Motivation aka What will we learn?
+# What will we learn?
 
 * Improve GraphQL API behavior - state representation to consumer
 * Reach Type safety on Client/Server
@@ -257,7 +257,7 @@ how [mutation v2](../client/src/main/resources/graphql/mutation/orderPizza_v2.gr
 ## Pros
 
 * Validation errors are part of schema -> Codegen will help.
-* Type safe to some extent. No need to deserialize `errors` and `extensions` fields any longer.
+* Type safety for validation errors.
 * Changes in errors are reflected is schema -> can be detected by consumer.
 
 ## Cons
@@ -268,9 +268,9 @@ how [mutation v2](../client/src/main/resources/graphql/mutation/orderPizza_v2.gr
 
 ## API v2 Conclusion
 
-* Error types are now part of schema. Deserialization is solved.
-* Consumer has to implement correctly error recognition. Not based on codes, but field presence.
-* Type safety reached to some extent... Can be better tho.
+* Error types are now part of schema -> type safety achieved. 
+* Validation error deserialization is solved by lib/framework.
+* Consumer has to implement correctly error recognition. Based on field presence.
 
 <p class="between-slide-space"></p>
 
