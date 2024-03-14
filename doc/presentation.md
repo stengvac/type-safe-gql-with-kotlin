@@ -56,47 +56,44 @@
 ## About
 
 * Kotlin just a little bit :(.
-* Mainly GraphQL schema designing.
-* GraphQL semantics for state representation. That's what will deliver type safety.
-* Order Pizza API evolution Show case.
+* Focus primarily on designing GraphQL schemas.
+* Emphasize GraphQL semantics for state representation, ensuring type safety.
+* Showcase the evolution of the Order Pizza API.
 
 # API producer vs API consumer
 
-* Statement: **usually main API focus is on success scenario**.
-* It is easy to implement.
-* Is it fine tho? What about errors, validation errors?
-* Don't take me wrong I am not saying it is wrong approach. As usual it depends...
+* Statement: **Usually, the primary focus of the API is on the success scenario**.
+* This approach is straightforward to implement.
+* However, is it sufficient? What about errors and validation errors?
+* While not implying that it's the wrong approach, it's important to recognize its limitations.
 
-Today we will focus on case, where consumer has to react on validation errors:
-* validation errors has to be well defined. 
-* **Have you tried to consume validation errors from yours API?**
-
-and has to react accordingly. Is proposed API friendly in such situation? 
+Today, we will concentrate on cases where the consumer must react to validation errors:
+* Validation errors need to be well-defined.
+* **Have you attempted to handle validation errors from your API?**
 
 # What will we learn?
 
-* Improve GraphQL API behavior - state representation to consumer
-* Reach Type safety on Client/Server
-* Less painful integration
+* Enhancing GraphQL API behavior for consumer state representation.
+* Achieving type safety on both client and server sides.
+* Less painful integration.
 
-# Show case - Pizzeria
+# Showcase - Pizzeria
 
-* Webpage where customer can customize and Order Pizza:
-  * size: 32 cm or 45 cm
-  * base: tomato, creamy
-  * ingredients: ham, olives, ...
-* Order Pizza response contain `order id` and `price` to pay once customer show up to pick up pizza.
-* Web has to provide excellent user experience.
-  * That means handle validation errors returned by GraphQL API. Not just **something went wrong** message.
-  * Target is 5 stars rating
+* A webpage where customer can customize and order Pizza:
+  * Size: 32 cm or 45 cm
+  * Base: tomato, creamy
+  * Ingredients: ham, olives, ...
+* The Order Pizza response contain `order id` and `price` to be paid when customer arrives to pick up pizza.
+* The website aims to provide an excellent user experience
+  * including handling validation errors returned by the GraphQL API, rather than simply displaying a generic error message.
 
-API has 3 versions. Each version with different approaches, but provide exactly same behavior.
+The API has 3 versions, each with different approach, but all providing the same behavior.
 
 <p class="between-slide-space">
 
 # Version 1
 
-Lets start with GraphQL schema [version 1](../server/src/main/resources/schema/schema.graphqls).
+Let's begin with the GraphQL schema for [version 1](../server/src/main/resources/schema/schema.graphqls).
 
 ## Valid Order
 
@@ -123,7 +120,7 @@ mutation OrderPizzaV1 {
   }
 }
 ```
-Response:
+Produces response:
 ```json
 {
   "data": {
@@ -159,7 +156,7 @@ mutation OrderPizzaV1 {
   }
 }
 ```
-produce response
+Produces response
 ```json
 {
   "errors": [
@@ -187,56 +184,55 @@ produce response
 }
 ```
 
-## Build in Error System
+## Built-in Error System
 
-This version use for error propagation build in error system in GraphQL. Errors format according
-to [Spec October 2021](https://spec.graphql.org/October2021/#sec-Errors) is defined as:
+This version utilizes the built-in error system in GraphQL for error propagation. Errors formatted according
+to the [Spec October 2021](https://spec.graphql.org/October2021/#sec-Errors) as follows:
 
 * The `errors` entry in the response is a non-empty list of errors, where each error is a map.
 * If no errors were raised during the request, the `errors` entry should not be present in the result.
 * If the data entry in the response is not present, the errors entry in the response must not be empty.
 
-`error` structure is defined as:
+The structure of an `error` is defined as follows:
 
-* required key `message` with a description of the error intended for the developer as a guide to understand and
+* A Required key `message` with a description of the error intended for the developer as a guide to understand and
   correct the error.
-* optional key `extensions` - must have a map as its value. additional information to errors however they see fit, and
+* An optional key `extensions` - must have a map as its value. additional information to errors however they see fit, and
   there are no additional restrictions on its contents.
-* other optional keys ...
+* Other optional keys ...
 
 ## Client
 [README](../client/README.md). Client [facade](../client/src/main/kotlin/org/example/typesafe/gql/pizza/client/PizzeriaClient.kt), [mutation v1](../client/src/main/resources/graphql/mutation/orderPizza_v1.graphql) and [client v1](../client/src/main/kotlin/org/example/typesafe/gql/pizza/client/ClientV1.kt).
 
 ## Pros
 
-* Easy to implement.
-* Easy to understand. Apply to (validation) errors?
+* Easy to implement and understand.
 
 ## Cons
 
-* Errors are not type safe. Custom content has to be serialized as Map.
-* Extract information from error is tricky. Integration via strings -_-.
-* Ambiguity - which errors can be expected in response at once? Is it documented?
-* Compiler won't help it is just bunch of strings.
-* Errors can change without consumer knowledge. No schema backed.
-* Testability on consumer side - which error combinations can be expected at same time? What has to be tested?
+* Errors lack type safety.
+* Extracting information from errors can be tricky.
+* Ambiguity regarding which errors can be expected in response.
+* Compiler can't help with string based integration.
+* Errors can change without consumer notification.
+* Limited testability on the consumer side.
 
 ## API v1 Conclusion
 
-* Success path is defined well.
-* Consumer is able to react on errors. Has to be documented or found out by calling API.
-* Error structure can change without notice. No schema backed.
-* Integration regarding validation errors depends on strings..
+* Success path is well-defined.
+* Consumers can react to errors but require documentation or direct API calls.
+* Error structure lacks schema backing.
+* Integration for validation errors relies on strings.
 
 <p class="between-slide-space"></p>
 
 # Version 2
 
-Lets improve some of mentioned problems with [schema_v2](../server/src/main/resources/schema/orderPizza_v2.graphqls).
+Let's address some of the mentioned issues with [schema_v2](../server/src/main/resources/schema/orderPizza_v2.graphqls).
 
 ## Validation Errors are part of schema
 
-Response for validation error Too Many Ingredients
+Response for the validation error "Too Many Ingredients"
 ```json
 {
   "data": {
@@ -252,38 +248,38 @@ Response for validation error Too Many Ingredients
   "errors": null
 }
 ```
-how [mutation v2](../client/src/main/resources/graphql/mutation/orderPizza_v2.graphql) and [client v2](../client/src/main/kotlin/org/example/typesafe/gql/pizza/client/ClientV2.kt) changed.
+See how [mutation v2](../client/src/main/resources/graphql/mutation/orderPizza_v2.graphql) and [client v2](../client/src/main/kotlin/org/example/typesafe/gql/pizza/client/ClientV2.kt) have changed.
 
 ## Pros
 
-* Validation errors are part of schema -> Codegen will help.
+* Validation errors are part of the schema, enabling code generation.
 * Type safety for validation errors.
-* Changes in errors are reflected is schema -> can be detected by consumer.
+* Changes in errors are reflected is schema.
 
 ## Cons
 
-* Response type mix data and validation errors -> reusability is lost.
-* Ambiguity - which errors can be expected in response at once? Mixing possibilities...
-* Testability on consumer side - which error combinations can be expected at same time?
+* Response type mixes data and validation errors, reducing reusability.
+* Ambiguity regarding which errors can be expected in response at once.
+* Limited testability on the consumer side.
 
 ## API v2 Conclusion
 
-* Error types are now part of schema -> type safety achieved. 
-* Validation error deserialization is solved by lib/framework.
-* Consumer has to implement correctly error recognition. Based on field presence.
+* Error types are now part of the schema, achieving type safety.
+* Validation error deserialization is handled by lib/framework.
+* Consumers need to correctly implement error recognition based on field presence.
 
 <p class="between-slide-space"></p>
 
 # Version 3
 
-Lets improve API one last time. Now with help of GraphQL `union` semantics to get rid of ambiguous states.
+Let's further enhance the API. This time, with the help of GraphQL `union` semantics to eliminate ambiguous states.
 
 ## GraphQL Union
 
-* Abstract GraphQL type, which enable to return one multiple object types.
-    * Not **scalar** or **input type**
+* An abstract GraphQL type that allows returning one of multiple object types.
+    * Not a **scalar** or **input type**
     * Types can have entirely different structure. 
-* It go quite well with `sealed` semantics in Kotlin. Coincidence?
+* It pairs well with `sealed` semantics in Kotlin.
 
 ```graphql
 union SearchResult = Book | Author
@@ -297,7 +293,7 @@ type Author {
 }
 ```
 
-`SearchResult` is one of types `Boor` or `Author` not both or none of them.
+`SearchResult` can be one of the types `Book` or `Author`, but not both or neither.
 
 Final API [schema_v3](../server/src/main/resources/schema/orderPizza_v3.graphqls), [mutation v3](../client/src/main/resources/graphql/mutation/orderPizza_v3.graphql) and [client v3](../client/src/main/kotlin/org/example/typesafe/gql/pizza/client/ClientV3.kt).
 
@@ -315,29 +311,28 @@ Final API [schema_v3](../server/src/main/resources/schema/orderPizza_v3.graphqls
 }
 ```
 
-`__typename` is technical GraphQL field, which can be queried for any type. It is used to match returned data to types listed in `union`.
-Thus various framework can map returned data to correct types.
+The `__typename` field is a technical GraphQL field used to match returned data to types listed in the union. Various frameworks can use it to map returned data to correct types.
 
 ## Pros
-* Clearly expressed API intention for various states.
-  * Which error can occur at once.
-* Schema clearly define, which responses are produced.
-* Testability is Quite Good. On producer and consumer side as we both sides know, which states can occur.
-* Codegen tools take advantage of `union` semantics and generate adequate code. Kotlin `sealed`, Typescript `union`.
+* Clearly expresses API intentions for various states, indicating which errors can occur simultaneously.
+* Schema clearly defines which responses are produced.
+* Testability is quite good, as both producer and consumer sides know which states can occur.
+* Code generation tools leverage `union` semantics to generate appropriate code (e.g., Kotlin, Java `sealed`, TypeScript `union`).
 
 ## Cons
-* API definition is complex.
-* More Code, Complexity and Maintenance cost.
-* Adding new type to union is breaking change for consumer.
+* API definition becomes complex.
+* Increased code complexity and maintenance costs.
+* Adding a new type to the union is a breaking change for consumers.
 
 # Summary
-Proof APIs works as expected [ApiBehaviorTest](../client/src/test/kotlin/org/example/typesafe/gql/pizza/client/ApiBehaviorTest.kt).
+Proof that APIs work as expected with [ApiBehaviorTest](../client/src/test/kotlin/org/example/typesafe/gql/pizza/client/ApiBehaviorTest.kt).
 
-We saw multiple approaches how to pass states to consumer. Difference lies in:
+We've explored multiple approaches to communicate states to consumers, differing in:
 
-* API Complexity
-* Consumer friendliness
+* API complexity
+* Consumer-friendliness
 * Type safety
-* Dependents on use case...
+
+Which one use? Dependents on use case.
 
 # Thanks. Questions?
