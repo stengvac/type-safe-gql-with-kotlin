@@ -32,7 +32,7 @@
 </style>
 
 # Typesafe GraphQL API with Kotlin
-<div class="bigger">Repo: <a>https://github.com/stengvac/type-safe-gql-with-kotlin</a></div> 
+<div class="bigger">Repo: <a href="https://github.com/stengvac/type-safe-gql-with-kotlin">https://github.com/stengvac/type-safe-gql-with-kotlin</a></div> 
 <div class="bigger">Disclaimer: Speaker can have Strong Opinions.</div>
 
 ## Speaker
@@ -56,7 +56,7 @@
 ## About
 
 * Kotlin just a little bit :(.
-* Focus primarily on designing GraphQL schemas.
+* Focus primarily on designing GraphQL operations.
 * Emphasize GraphQL semantics for state representation, ensuring type safety.
 * Showcase the evolution of the Order Pizza API.
 
@@ -197,7 +197,7 @@ The structure of an `error` is defined as follows:
 
 * A Required key `message` with a description of the error intended for the developer as a guide to understand and
   correct the error.
-* An optional key `extensions` - must have a map as its value. additional information to errors however they see fit, and
+* An optional key `extensions` - must have a map as its value. Additional information to errors however they see fit, and
   there are no additional restrictions on its contents.
 * Other optional keys ...
 
